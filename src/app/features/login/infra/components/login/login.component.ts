@@ -64,13 +64,20 @@ export class LoginComponent {
   }
 
   login(): void {
-    this.loginUseCase
-      .execute({ username: this.username.value, password: this.password.value })
-      .subscribe({
-        next: () => {},
-        error: (err) => {
-          this.errorMessage = err.message;
-        },
-      });
+    if (this.form.valid) {
+      this.loginUseCase
+        .execute({
+          username: this.username.value,
+          password: this.password.value,
+        })
+        .subscribe({
+          next: () => {},
+          error: (err) => {
+            this.errorMessage = err.message;
+          },
+        });
+    } else {
+      this.errorMessage = 'Por favor, complete todos los campos correctamente.';
+    }
   }
 }
