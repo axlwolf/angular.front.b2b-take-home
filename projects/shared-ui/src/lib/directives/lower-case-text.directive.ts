@@ -16,9 +16,29 @@ export class AplazoLowercaseDirective {
     optional: true,
   });
 
+  constructor() {
+    console.log({ elementRef: this.#elementRef, ngControl: this.#ngControl });
+  }
+
   sanitizeValue(event: InputEvent): void {
-    // TODO: sanitize the value to lowercase
-    // TODO: propagate the value to the NgControl
-    // TODO: preserve the cursor position
+    console.log({ event });
+    const element = this.#elementRef.nativeElement;
+    const start = element.selectionStart;
+    const end = element.selectionEnd;
+    const currentValue = element.value;
+
+    const sanitizedValue = currentValue.toLowerCase();
+
+    if (sanitizedValue !== currentValue) {
+      element.value = sanitizedValue;
+
+      if (this.#ngControl) {
+        this.#ngControl.control?.setValue(sanitizedValue, { emitEvent: true }); // Important: emitEvent for reactivity
+      }
+      // Preserve cursor position.  Account for potential differences in case conversion length (e.g., German Eszett ß)
+      if (start !== null && end !== null) {
+        element.setSelectionRange(start, end);
+      }
+    }
   }
 }

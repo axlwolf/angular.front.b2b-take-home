@@ -15,9 +15,33 @@ export class AplazoNoWhiteSpaceDirective {
     optional: true,
   });
 
+  constructor() {
+    console.log({ elementRef: this.#elementRef, ngControl: this.#ngControl });
+  }
+
   sanitizeValue(): void {
-    // TODO: sanitize the value to remove white spaces
-    // TODO: propagate the value to the NgControl
-    // TODO: preserve the cursor position
+    const element = this.#elementRef.nativeElement;
+    const start = element.selectionStart;
+    const end = element.selectionEnd;
+    const currentValue = element.value;
+
+    const sanitizedValue = currentValue.replace(/\s/g, '');
+
+    if (sanitizedValue !== currentValue) {
+      element.value = sanitizedValue;
+
+      if (this.#ngControl) {
+        this.#ngControl.control?.setValue(sanitizedValue);
+      }
+
+      if (start !== null && end !== null) {
+        // Adjust cursor position based on removed whitespace
+        const diff = currentValue.length - sanitizedValue.length;
+        const newStart = Math.max(0, start - diff); // Ensure it doesn't go below 0
+        const newEnd = Math.max(0, end - diff);
+
+        element.setSelectionRange(newStart, newEnd);
+      }
+    }
   }
 }
