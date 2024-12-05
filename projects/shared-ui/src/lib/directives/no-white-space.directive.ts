@@ -15,10 +15,6 @@ export class AplazoNoWhiteSpaceDirective {
     optional: true,
   });
 
-  constructor() {
-    console.log({ elementRef: this.#elementRef, ngControl: this.#ngControl });
-  }
-
   sanitizeValue(): void {
     const element = this.#elementRef.nativeElement;
     const start = element.selectionStart;

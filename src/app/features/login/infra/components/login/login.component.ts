@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, ElementRef, inject, ViewChild } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -13,6 +13,7 @@ import {
   AplazoNoWhiteSpaceDirective,
   AplazoLowercaseDirective,
 } from '@apz/shared-ui';
+import { tap } from 'rxjs';
 
 @Component({
   standalone: true,
@@ -29,11 +30,17 @@ import {
   ],
 })
 export class LoginComponent {
+  @ViewChild('passwordField') passwordField!: ElementRef<HTMLInputElement>;
+
   readonly loginUseCase = inject(LoginUseCase);
 
   readonly username = new FormControl<string>('', {
     nonNullable: true,
-    validators: [Validators.required, Validators.email],
+    validators: [
+      Validators.required,
+      Validators.email,
+      Validators.pattern(/^[^\s@]+@[^\s@]+\.[^\s@]+$/),
+    ],
   });
 
   readonly password = new FormControl<string>('', {
@@ -51,26 +58,19 @@ export class LoginComponent {
 
   toggleShowPassword(): void {
     this.showPassword = !this.showPassword;
-    const passwordField: any = document.getElementById('password');
-    passwordField.type = this.showPassword ? 'text' : 'password';
+    this.passwordField.nativeElement.type = this.showPassword
+      ? 'text'
+      : 'password';
   }
 
   login(): void {
-    console.log({ form: this.form });
-    if (this.form.valid) {
-      this.loginUseCase
-        .execute({
-          username: this.username.value,
-          password: this.password.value,
-        })
-        .subscribe({
-          next: () => {},
-          error: (err) => {
-            this.errorMessage = err.message; // Mostrar mensaje de error del backend
-          },
-        });
-    } else {
-      this.errorMessage = 'Por favor, complete todos los campos correctamente.';
-    }
+    this.loginUseCase
+      .execute({ username: this.username.value, password: this.password.value })
+      .subscribe({
+        next: () => {},
+        error: (err) => {
+          this.errorMessage = err.message;
+        },
+      });
   }
 }

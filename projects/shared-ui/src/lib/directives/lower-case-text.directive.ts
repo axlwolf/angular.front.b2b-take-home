@@ -16,12 +16,7 @@ export class AplazoLowercaseDirective {
     optional: true,
   });
 
-  constructor() {
-    console.log({ elementRef: this.#elementRef, ngControl: this.#ngControl });
-  }
-
   sanitizeValue(event: InputEvent): void {
-    console.log({ event });
     const element = this.#elementRef.nativeElement;
     const start = element.selectionStart;
     const end = element.selectionEnd;
@@ -35,7 +30,7 @@ export class AplazoLowercaseDirective {
       if (this.#ngControl) {
         this.#ngControl.control?.setValue(sanitizedValue, { emitEvent: true }); // Important: emitEvent for reactivity
       }
-      // Preserve cursor position.  Account for potential differences in case conversion length (e.g., German Eszett ß)
+      // Preserve cursor position
       if (start !== null && end !== null) {
         element.setSelectionRange(start, end);
       }

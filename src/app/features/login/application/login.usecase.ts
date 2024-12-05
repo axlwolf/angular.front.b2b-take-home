@@ -14,12 +14,18 @@ export class LoginUseCase {
 
   execute(credentials: Credentials): Observable<string> {
     try {
+      console.log({ credentials });
       if (!credentials.username) {
         throw new Error('El correo electrónico es requerido');
       }
 
+      if (!credentials.password) {
+        throw new Error('La contraseña es requerida');
+      }
+
       return this.#repository.authenticate(credentials).pipe(
         tap((token) => {
+          console.log({ token });
           this.#router.navigate([ROUTE_CONFIG.app, ROUTE_CONFIG.home]);
         }),
 
