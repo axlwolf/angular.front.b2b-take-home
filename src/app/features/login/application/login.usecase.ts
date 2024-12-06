@@ -15,7 +15,6 @@ export class LoginUseCase {
 
   execute(credentials: Credentials): Observable<string> {
     try {
-      console.log({ credentials });
       if (!credentials.username) {
         return throwError(
           () => new Error('El correo electrónico es requerido')
@@ -28,7 +27,7 @@ export class LoginUseCase {
 
       return this.#repository.authenticate(credentials).pipe(
         tap((token) => {
-          console.log({ token });
+          localStorage.setItem('token', token);
           this.#router.navigate([ROUTE_CONFIG.app, ROUTE_CONFIG.home]);
         }),
 
@@ -40,7 +39,6 @@ export class LoginUseCase {
         })
       );
     } catch (error) {
-      console.warn(error);
       throw error;
     }
   }

@@ -3,10 +3,12 @@
     <nav
       class="flex flex-grow flex-shrink-0 justify-between items-center w-full"
     >
-      <h2 class="font-medium text-2xl">Layout Principal</h2>
+      <h2 class="font-medium text-2xl">{{ titleService.getTitle() }}</h2>
 
       <button aplzButton aplzAppearance="basic" size="md" class="items-center">
-        <span class="lowercase font-light"> Cerrar sesión </span>
+        <span class="lowercase font-light" (click)="logOut()">
+          Cerrar sesión
+        </span>
       </button>
     </nav>
   </aplz-ui-dash-header>

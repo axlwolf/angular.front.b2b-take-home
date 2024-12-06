@@ -14,6 +14,7 @@ import {
   AplazoLowercaseDirective,
 } from '@apz/shared-ui';
 import { tap } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   standalone: true,
@@ -63,21 +64,36 @@ export class LoginComponent {
       : 'password';
   }
 
-  login(): void {
-    if (this.form.valid) {
-      this.loginUseCase
-        .execute({
-          username: this.username.value,
-          password: this.password.value,
-        })
-        .subscribe({
-          next: () => {},
-          error: (err) => {
-            this.errorMessage = err.message;
-          },
-        });
+  handleLoginError(error: any): void {
+    if (error instanceof HttpErrorResponse) {
+      this.errorMessage =
+        error.status === 401
+          ? 'Usuario o contraseña incorrectos'
+          : 'Error al iniciar sesión. Intente nuevamente.';
     } else {
-      this.errorMessage = 'Por favor, complete todos los campos correctamente.';
+      this.errorMessage = error.message;
     }
+  }
+
+  login(): void {
+    if (!this.form.valid) {
+      this.errorMessage = 'Por favor, complete todos los campos correctamente.';
+      this.form.markAllAsTouched();
+      return;
+    }
+
+    this.errorMessage = null;
+    const loginCredentials = {
+      username: this.username.value.toLowerCase(),
+      password: this.password.value,
+    };
+
+    this.loginUseCase.execute(loginCredentials).subscribe({
+      next: () => {
+        // Acción después de un login exitoso, si aplica
+        console.log('Login exitoso');
+      },
+      error: (error) => this.handleLoginError(error),
+    });
   }
 }
