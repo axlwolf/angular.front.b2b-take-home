@@ -53,6 +53,7 @@ export class LayoutComponent implements OnInit {
     };
     const title = titleMap[currentRoute!] || 'Home';
     this.titleService.setTitle(title);
+    this.pageTitle = title;
   }
 
   clickLogo(): void {

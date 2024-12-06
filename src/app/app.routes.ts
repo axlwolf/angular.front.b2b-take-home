@@ -5,6 +5,8 @@ import { HomeComponent } from './features/home/infra/home.component';
 import { LayoutComponent } from './features/layout/layout.component';
 import { LoginComponent } from './features/login/infra/components/login/login.component';
 import { provideLogin } from './features/login/infra/config/providers';
+import { authGuard } from './core/infra/guards/auth.guard';
+import { authenticatedGuard } from './core/infra/guards/authenticated.guard';
 
 export const routes: Routes = [
   {
@@ -16,10 +18,12 @@ export const routes: Routes = [
     path: ROUTE_CONFIG.login,
     component: LoginComponent,
     providers: [provideLogin()],
+    canActivate: [authenticatedGuard],
   },
   {
     path: ROUTE_CONFIG.app,
     component: LayoutComponent,
+    canActivate: [authGuard],
     children: [
       {
         path: '',
