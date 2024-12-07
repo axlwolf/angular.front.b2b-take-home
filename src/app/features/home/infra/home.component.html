@@ -1,0 +1,97 @@
+<div class="p-6">
+  <div class="mb-8 bg-white rounded">
+    <!-- Filtros Header -->
+    <div class="p-4 flex justify-between items-center cursor-pointer">
+      <div class="flex items-center gap-2">
+        <h2 class="text-xl font-medium">Filtros</h2>
+        <span
+          *ngIf="areFiltersActive()"
+          class="bg-blue-500 text-white text-xs px-2 py-1 rounded"
+        >
+          Filtros activos
+        </span>
+      </div>
+    </div>
+
+    <!-- Filtros Content -->
+    <div class="overflow-hidden">
+      <div class="p-4">
+        <div class="grid gap-6">
+          <div>
+            <div class="mb-4">
+              <label
+                for="branchSelect"
+                class="block text-lg font-medium text-gray-700"
+                >Sucursales</label
+              >
+              <select
+                id="branchSelect"
+                multiple
+                (change)="onBranchSelectionChange($event)"
+                class="block w-full mt-1 border-gray-300 rounded-md shadow-sm"
+              >
+                <option
+                  *ngFor="let branchId of availableBranches"
+                  [value]="branchId"
+                  [selected]="selectedBranches.has(branchId)"
+                >
+                  Branch {{ branchId }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <div class="flex gap-4">
+            <div>
+              <label for="startDate" class="block mb-2">Fecha Inicio</label>
+              <input
+                type="date"
+                id="startDate"
+                [formControl]="startDateControl"
+                class="border rounded px-3 py-2"
+              />
+            </div>
+
+            <div>
+              <label for="endDate" class="block mb-2">Fecha Fin</label>
+              <input
+                type="date"
+                id="endDate"
+                [formControl]="endDateControl"
+                class="border rounded px-3 py-2"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 flex justify-end">
+          <button
+            (click)="resetAllFilters()"
+            class="flex items-center gap-2 text-blue-600 hover:text-blue-800"
+          >
+            Resetear filtros
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Resumen -->
+  <h2 class="text-2xl font-medium mb-6">RESUMEN DE PEDIDOS</h2>
+  <div class="grid grid-cols-3 rouded">
+    <div class="bg-[#2D2D2D] bg-gray-800 p-6 text-white">
+      <h3 class="font-medium uppercase text-sm mb-2">Total de ventas</h3>
+      <p class="text-2xl">{{ totalSales | currency }}</p>
+    </div>
+
+    <div class="bg-[#2D2D2D] bg-gray-800 p-6 text-white">
+      <h3 class="font-medium uppercase text-sm mb-2">Número de pedidos</h3>
+      <p class="text-2xl">{{ totalOrders }}</p>
+    </div>
+
+    <div class="bg-[#2D2D2D] bg-gray-800 p-6 text-white">
+      <h3 class="font-medium uppercase text-sm mb-2">Ticket promedio</h3>
+      <p class="text-2xl">{{ averageTicket | currency }}</p>
+    </div>
+  </div>
+</div>

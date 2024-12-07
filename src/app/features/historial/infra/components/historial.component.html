@@ -1,0 +1,105 @@
+<div class="p-6">
+  <!-- Contador de Operaciones y Filtros de Fecha -->
+  <div class="mb-4 flex items-center justify-between">
+    <h2 class="text-xl font-medium">
+      Total de Operaciones: {{ totalOrdersCount }}
+    </h2>
+    <div class="flex gap-4">
+      <div>
+        <label for="startDate" class="block text-sm font-medium text-gray-700"
+          >Fecha Inicio</label
+        >
+        <input
+          type="date"
+          id="startDate"
+          [formControl]="startDateControl"
+          class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+        />
+      </div>
+      <div>
+        <label for="endDate" class="block text-sm font-medium text-gray-700"
+          >Fecha Fin</label
+        >
+        <input
+          type="date"
+          id="endDate"
+          [formControl]="endDateControl"
+          class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+        />
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabla de Operaciones -->
+  <table class="min-w-full bg-white">
+    <thead>
+      <tr>
+        <th
+          (click)="sortOrders('loanId')"
+          class="py-4 px-4 border-b border-gray-200 text-left text-gray-600 cursor-pointer"
+        >
+          NÚMERO DE PEDIDO
+        </th>
+        <th
+          (click)="sortOrders('updatedAt')"
+          class="py-4 px-4 border-b border-gray-200 text-left text-gray-600 cursor-pointer"
+        >
+          FECHA
+        </th>
+        <th
+          (click)="sortOrders('status')"
+          class="py-4 px-4 border-b border-gray-200 text-left text-gray-600 cursor-pointer"
+        >
+          ESTADO
+        </th>
+        <th
+          (click)="sortOrders('price')"
+          class="py-4 px-4 border-b border-gray-200 text-left text-gray-600 cursor-pointer"
+        >
+          MONTOS
+        </th>
+        <th class="py-4 px-4 border-b border-gray-200 text-left text-gray-600">
+          ACCIÓN
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        *ngFor="let order of paginatedOrders"
+        [class.border-l-4]="true"
+        [class.border-[#7be2a1]]="order.status === 'APROBADO'"
+      >
+        <td class="py-4 px-4 border-b border-gray-200">{{ order.loanId }}</td>
+        <td class="py-4 px-4 border-b border-gray-200">
+          {{ order.updatedAt | date : "dd/MM/yy, HH:mm" }}
+        </td>
+        <td class="py-4 px-4 border-b border-gray-200">
+          <span [class]="getStatusClass(order.status)">{{ order.status }}</span>
+        </td>
+        <td class="py-4 px-4 border-b border-gray-200">
+          {{ order.price | currency }}
+        </td>
+        <td class="py-4 px-4 border-b border-gray-200"></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Controles de Paginación -->
+  <div class="flex justify-between mt-4">
+    <button
+      (click)="changePage(currentPage - 1)"
+      [disabled]="currentPage === 1"
+      class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded hover:bg-gray-300"
+    >
+      Anterior
+    </button>
+    <span> Página {{ currentPage }} de {{ totalPages }} </span>
+    <button
+      (click)="changePage(currentPage + 1)"
+      [disabled]="currentPage === totalPages"
+      class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded hover:bg-gray-300"
+    >
+      Siguiente
+    </button>
+  </div>
+</div>
